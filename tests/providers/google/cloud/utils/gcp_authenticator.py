@@ -32,6 +32,7 @@ from tests.test_utils.logging_command_executor import CommandExecutor
 GCP_AI_KEY = "gcp_ai.json"
 GCP_BIGQUERY_KEY = "gcp_bigquery.json"
 GCP_BIGTABLE_KEY = "gcp_bigtable.json"
+GCP_CLOUD_BATCH_KEY = "gcp_cloud_batch.json"
 GCP_CLOUD_BUILD_KEY = "gcp_cloud_build.json"
 GCP_CLOUD_COMPOSER = "gcp_cloud_composer.json"
 GCP_CLOUDSQL_KEY = "gcp_cloudsql.json"
