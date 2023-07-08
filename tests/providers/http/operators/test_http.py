@@ -81,3 +81,16 @@ class TestSimpleHttpOp:
         )
         result = operator.execute({})
         assert result == {"value": 5}
+
+    def test_deferrable(self, requests_mock):
+        # TODO
+        requests_mock.get("http://www.example.com", json={"value": 5})
+        operator = SimpleHttpOperator(
+            task_id="test_HTTP_op",
+            method="GET",
+            endpoint="/",
+            http_conn_id="HTTP_EXAMPLE",
+            response_filter=lambda response: response.json(),
+        )
+        result = operator.execute({})
+        assert result == {"value": 5}

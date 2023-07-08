@@ -16,13 +16,9 @@
 # under the License.
 from __future__ import annotations
 
-import asyncio
 from typing import Any, AsyncIterator, Sequence
-
-import aiohttp
-
-from airflow.exceptions import AirflowException
-from google.cloud.devtools.cloudbuild_v1.types import Build
+import pickle
+import base64
 
 from airflow.providers.http.hooks.http import HttpAsyncHook
 from airflow.triggers.base import BaseTrigger, TriggerEvent
@@ -95,7 +91,17 @@ class HttpTrigger(BaseTrigger):
                 headers=self.headers,
                 extra_options=self.extra_options,
             )
-            yield TriggerEvent({"status": "success", "response": response})
+            text = await response.text()
+            yield TriggerEvent({
+                "status": "success",
+                "response": base64.standard_b64encode(
+                    pickle.dumps({
+                        "status": response.status,
+                        "headers": list(response.headers.items()),
+                        "text": text,
+                    })
+                ).decode('ascii'),
+            })
         except Exception as e:
             yield TriggerEvent({"status": "error", "message": str(e)})
 

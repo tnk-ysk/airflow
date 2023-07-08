@@ -18,8 +18,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, Sequence
-
 from requests.auth import AuthBase
+import pickle
+import base64
 
 from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
@@ -155,9 +156,9 @@ class SimpleHttpOperator(BaseOperator):
         from airflow.utils.operator_helpers import determine_kwargs
 
         if event["status"] == "success":
-            response = event["response"]
+            response = pickle.loads(base64.standard_b64decode(event["response"]))
             if self.log_response:
-                self.log.info(response.text())
+                self.log.info(response["text"])
             if self.response_check:
                 kwargs = determine_kwargs(self.response_check, [response], context)
                 if not self.response_check(response, **kwargs):
@@ -165,6 +166,6 @@ class SimpleHttpOperator(BaseOperator):
             if self.response_filter:
                 kwargs = determine_kwargs(self.response_filter, [response], context)
                 return self.response_filter(response, **kwargs)
-            return response.text()
+            return response["text"]
         else:
             raise AirflowException(f"Unexpected error in the operation: {event['message']}")
