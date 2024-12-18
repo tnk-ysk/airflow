@@ -2787,6 +2787,7 @@ class BigQueryUpdateTableSchemaOperator(GoogleCloudBaseOperator):
 
 class BigQueryInsertJobOperator(GoogleCloudBaseOperator, _BigQueryOpenLineageMixin):
     """
+    
     Execute a BigQuery job.
 
     Waits for the job to complete and returns job id.
